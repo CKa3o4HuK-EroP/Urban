@@ -24,7 +24,6 @@ def check_mail(email):
             hostname, domain = host.split('.')
             if domain not in domains:
                 flag = False
-        pass
     return flag
 
 
