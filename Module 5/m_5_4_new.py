@@ -7,6 +7,7 @@ class House:
             return object.__new__(cls)
         else:
             print(f'Здание с именем {args[0]} уже существует.')
+            return None
 
     def __init__(self, name, floors):
         self.name = name
