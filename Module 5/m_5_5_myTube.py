@@ -8,30 +8,56 @@ class UrTube:
         self.current_user = None
         pass
 
+    def __repr__(self):
+        return (f'Текущий пользователь: {self.current_user};'
+                f'Зарегистрированных пользователей: {len(self.users)};'
+                f'Загруженных видео: {len(self.videos)}')
+
     def log_in(self, username, password):
-        if username in self.users:
+        for user in self.users:
+            if user.un == username:
+                if user.pw == hash(password):
+                    self.current_user = user
+                    print(f'Выполнен вход в аккаунт {username}.')
+                    break
+                else:
+                    print("Неверный пароль.")
+                    pass
+                pass
+            else:
+                print("Пользователь с таким именем не зарегистрирован.")
+                pass
             pass
         pass
 
     def register(self, un, pw, age):
-        self.log_out()
-        if un in self.users:
-            print(f'Имя пользователя {un} занято.')
+        user = User(un, pw, age)
+        for us in self.users:
+            if user.un == us.un:
+                print(f'Имя пользователя {un} уже занято.')
+                break
+            pass
         else:
-            self.users.append(User(un, pw, age))
+            self.users.append(user)
+            print(f'Пользователь {un} был успешно зарегестрирован.')
+            if self.current_user is not None:
+                self.log_out()
             self.log_in(un, pw)
             pass
-
         pass
 
     def log_out(self):
         self.current_user = None
+        print(f'Выполнен выход из аккаунта.')
         pass
 
     def add(self, *kwargs):
         for v in kwargs:
             if isinstance(v, Video):
                 self.videos.append(v)
+                print(f'Было добавлено новое видео - {v.title} длительностью {v.duration}.')
+                pass
+            pass
         pass
 
     def get_videos(self, query):
@@ -41,13 +67,18 @@ class UrTube:
                 reply.append(video.title)
                 pass
             pass
-        print(reply)
-        pass
+        if reply:
+            return f'Подходящие по запросу видео: {reply}.'
+        else:
+            return 'Подходящих по запросу видео не обнаружено.'
 
     def watch_video(self, query):
         if self.current_user is None:
             print('Для просмотра видео необходимо войти в аккаунт.')
-        elif True:
+        else:
+            for video in self.videos:
+                if query == video.title:
+
             pass
         pass
     pass
@@ -60,15 +91,21 @@ class Video:
         self.time = time_now
         self.adult = adult_mode
         pass
+
+    def __str__(self):
+        return f'"{self.title}"; {self.duration} секунд'
     pass
 
 
 class User:
     def __init__(self, nickname, password, age):
-        self.username = nickname
+        self.un = nickname
         self.pw = hash(password)
         self.age = age
         pass
+
+    def __str__(self):
+        return f'Имя пользователя: {self.un}'
     pass
 
 
