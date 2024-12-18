@@ -9,13 +9,15 @@ class UrTube:
         pass
 
     def __repr__(self):
-        return (f'Текущий пользователь: {self.current_user};'
-                f'Зарегистрированных пользователей: {len(self.users)};'
+        return (f'Текущий пользователь: {self.current_user}; '
+                f'Зарегистрированных пользователей: {len(self.users)}; '
                 f'Загруженных видео: {len(self.videos)}')
 
     def log_in(self, username, password):
+        unknown_user = True
         for user in self.users:
             if user.un == username:
+                unknown_user = False
                 if user.pw == hash(password):
                     self.current_user = user
                     print(f'Выполнен вход в аккаунт {username}.')
@@ -24,9 +26,8 @@ class UrTube:
                     print("Неверный пароль.")
                     pass
                 pass
-            else:
-                print("Пользователь с таким именем не зарегистрирован.")
-                pass
+        if unknown_user:
+            print("Пользователь с таким именем не зарегистрирован.")
             pass
         pass
 
@@ -73,13 +74,30 @@ class UrTube:
             return 'Подходящих по запросу видео не обнаружено.'
 
     def watch_video(self, query):
-        if self.current_user is None:
-            print('Для просмотра видео необходимо войти в аккаунт.')
-        else:
+        if self.current_user is not None:
+            found = False
             for video in self.videos:
                 if query == video.title:
-
-            pass
+                    found = True
+                    if video.adult and (self.current_user.age < 18):
+                        print("Данное видео недуступно для просмотра несовершеннолетним пользователям.")
+                        break
+                    else:
+                        print(f'Видео "{video.title}" успешно запущено.')
+                        t = 0
+                        while t < video.duration:
+                            print(t, end=' ')
+                            t += 1
+                            sleep(1)
+                            pass
+                        print("Конец видео.")
+                        pass
+                    break
+            if not found:
+                print("Видео с таким названием не найдено.")
+                pass
+        else:
+            print('Для просмотра видео необходимо войти в аккаунт.')
         pass
     pass
 
@@ -105,7 +123,7 @@ class User:
         pass
 
     def __str__(self):
-        return f'Имя пользователя: {self.un}'
+        return self.un
     pass
 
 
